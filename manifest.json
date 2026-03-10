@@ -1,0 +1,64 @@
+{
+    "name": "Checkmate Pro",
+    "short_name": "Checkmate Pro",
+    "description": "Experience ultra-fast matchmaking and beautiful 60FPS fluid gameplay with Checkmate Pro.",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#0a0c10",
+    "theme_color": "#81b64c",
+    "orientation": "portrait",
+    "categories": [
+        "games",
+        "sports"
+    ],
+    "icons": [
+        {
+            "src": "fixedfinallogo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "fixedfinallogo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "fixedfinallogo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshot1.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Deep Blue Matchmaking"
+        },
+        {
+            "src": "screenshot1.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "The Arena"
+        },
+        {
+            "src": "screenshot2.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Global Matchmaking"
+        },
+        {
+            "src": "screenshot3.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Tactics & Profile"
+        }
+    ]
+}

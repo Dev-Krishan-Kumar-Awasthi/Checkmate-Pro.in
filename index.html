@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkmate Pro - by Krishan Kumar Awasthi</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="fixedfinallogo.png">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#81b64c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Checkmate Pro">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Store Modal Custom Styles -->
+    <style>
+        .store-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .store-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .store-modal {
+            width: 100%;
+            max-width: 500px;
+            background: #262522;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .store-modal-overlay.active .store-modal {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #bababa;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .store-header {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .store-app-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .store-app-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+        }
+
+        .store-developer {
+            color: #81b64c;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .store-badges {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #bababa;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .store-actions {
+            margin-bottom: 2rem;
+        }
+
+        .store-install-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .store-screenshots {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            padding-bottom: 10px;
+        }
+
+        .store-screenshots::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .store-screenshots::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+        }
+
+        .store-screenshots img {
+            height: 220px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .store-description h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .store-description p {
+            font-size: 0.95rem;
+            color: #bababa;
+            line-height: 1.4;
+        }
+
+        .store-tags {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .store-tags span {
+            background: rgba(129, 182, 76, 0.1);
+            color: #81b64c;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .store-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+            color: #bababa;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .store-modal-overlay {
+                align-items: center;
+            }
+
+            .store-modal {
+                border-radius: 30px;
+                max-height: 80vh;
+                transform: scale(0.9);
+            }
+
+            .store-modal-overlay.active .store-modal {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
+    <!-- Floating Chess Pieces -->
+    <div class="floating-pieces">
+        <i class="fa-solid fa-chess-knight piece piece-1"></i>
+        <i class="fa-solid fa-chess-rook piece piece-2"></i>
+        <i class="fa-solid fa-chess-bishop piece piece-3"></i>
+        <i class="fa-solid fa-chess-queen piece piece-4"></i>
+        <i class="fa-solid fa-chess-king piece piece-5"></i>
+        <i class="fa-solid fa-chess-pawn piece piece-6"></i>
+        <i class="fa-solid fa-chess-knight piece piece-7"></i>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="logo">
+            <img src="fixedfinallogo.png" alt="Checkmate Pro Logo" class="nav-logo-img">
+            <span>Checkmate Pro</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#developer">Developer</a></li>
+        </ul>
+        <div class="nav-buttons">
+            <button id="installBtnNav" class="btn-secondary install-btn"><i
+                    class="fa-solid fa-mobile-screen-button"></i> Install App</button>
+            <button id="downloadBtnNav" class="btn-primary"><i class="fa-solid fa-download"></i>
+                APK</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content glass-panel fade-in-up">
+            <div class="game-badge"><i class="fa-solid fa-chess-board"></i> Ultimate Chess Platform</div>
+            <h1>Master Your Game. <br><span class="highlight">Premium Chess Experience.</span></h1>
+            <p>Experience ultra-fast matchmaking, professional analytics, and beautiful 60FPS fluid gameplay.
+                Powered by Flutter and Node.js for real-time competitive action.</p>
+            <div class="hero-buttons">
+                <button id="installBtnHero" class="btn-primary install-btn"><i
+                        class="fa-solid fa-mobile-screen-button"></i> Install App</button>
+                <button id="downloadBtnHero" class="btn-primary install-btn"><i class="fa-solid fa-download"></i>
+                    Download APK</button>
+            </div>
+            <div class="hero-secondary-buttons">
+                <a href="#features" class="btn-secondary">Explore Features</a>
+            </div>
+
+            <div class="live-stats">
+                <div class="stat-item">
+                    <span class="stat-value">60 FPS</span>
+                    <span class="stat-label">Fluid Gameplay</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">1ms</span>
+                    <span class="stat-label">Input Latency</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value">Anti-Cheat</span>
+                    <span class="stat-label">Server Validated</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-image float-animation">
+            <div class="phone-mockup">
+                <div class="screen">
+                    <img src="fixedfinallogo.png" class="hero-board-logo" alt="Checkmate Pro App">
+                    <div class="live-indicator">
+                        <span class="pulse-dot"></span> LIVE MATCHES
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Slideshow Section -->
+    <section id="features" class="features">
+        <div class="section-title">
+            <h2>Experience Checkmate Pro</h2>
+            <p>Every move, every stat, every victory beautifully captured in our premium interface.</p>
+        </div>
+
+        <div class="slideshow-container glass-panel">
+            <!-- Slide 1 -->
+            <div class="feature-slide fade">
+                <div class="feature-text">
+                    <i class="fa-solid fa-chess-board showcase-icon text-gradient-1"></i>
+                    <h3>Immersive 60FPS Board</h3>
+                    <p>Experience smooth, drag-and-drop gameplay built on a custom Flutter Canvas engine. Enjoy
+                        real-time server-side move validation, haptic feedback on captures, and independent audio
+                        channels.</p>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> Zero-latency Premove support</li>
+                        <li><i class="fa-solid fa-check"></i> Chess.js Server Validation</li>
+                        <li><i class="fa-solid fa-check"></i> Clean, premium Glassmorphism UI</li>
+                    </ul>
+                </div>
+                <div class="feature-img-container">
+                    <div class="phone-mockup slideshow-mockup">
+                        <!-- Assuming screenshot1.png is the board or home screen -->
+                        <img src="screenshot1.png" alt="App Gameplay" class="app-screenshot">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="feature-slide fade">
+                <div class="feature-text">
+                    <i class="fa-solid fa-users showcase-icon text-gradient-2"></i>
+                    <h3>Ultra-Fast Matchmaking</h3>
+                    <p>Our globally distributed Redis and Socket.io architecture pairs you with opponents in
+                        milliseconds. Play 1m Bullet, 3m Blitz, or 10m Rapid matches with built-in reconnection support.
+                    </p>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> Elo-based pairing algorithm</li>
+                        <li><i class="fa-solid fa-check"></i> 60-second Redis reconnect window</li>
+                        <li><i class="fa-solid fa-check"></i> Sub-millisecond Socket.io latency</li>
+                    </ul>
+                </div>
+                <div class="feature-img-container">
+                    <div class="phone-mockup slideshow-mockup">
+                        <img src="screenshot2.png" alt="App Matchmaking" class="app-screenshot">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="feature-slide fade">
+                <div class="feature-text">
+                    <i class="fa-solid fa-chart-line showcase-icon text-gradient-3"></i>
+                    <h3>Stockfish Analytics & Ranks</h3>
+                    <p>Track your competitive Elo rating mapped securely against a Supabase PostgreSQL backend. Coming
+                        soon: Post-game WASM Stockfish analysis to highlight your Brilliant Moves and Blunders.</p>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> Fair-play Anti-Cheat detection</li>
+                        <li><i class="fa-solid fa-check"></i> Persistent global rankings</li>
+                        <li><i class="fa-solid fa-check"></i> Secure JWT Authentication</li>
+                    </ul>
+                </div>
+                <div class="feature-img-container">
+                    <div class="phone-mockup slideshow-mockup">
+                        <img src="screenshot3.png" alt="App Profile Statistics" class="app-screenshot">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="slider-controls">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Banner (Mid-Page) -->
+    <section id="download" class="download-banner glass-panel">
+        <div class="banner-content">
+            <div class="version-tag">STABLE v1.0.0</div>
+            <h2>Ready to make your move?</h2>
+            <p>Join the growing community and be among the first to play Checkmate Pro on Android.</p>
+            <a href="CheckmatePro.apk" download class="btn-primary large-btn bounce-animation">
+                <h1><i class="fa-brands fa-android"></i> Download APK (Free)</h1>
+                <span>75 MB | Verified Clean by Sentinel Anti-Cheat</span>
+            </a>
+
+            <div class="platform-support">
+                <div class="support-item"><i class="fa-brands fa-android"></i> Android 9.0+</div>
+                <div class="support-item"><i class="fa-solid fa-microchip"></i> 2GB RAM Min</div>
+                <div class="support-item"><i class="fa-solid fa-wifi"></i> Online Play Req.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer/Portfolio Section -->
+    <section id="developer" class="developer-section">
+        <div class="section-title">
+            <h2>Meet the Developer</h2>
+            <p>The mind behind Checkmate Pro and other premium digital products.</p>
+        </div>
+
+        <div class="dev-container glass-panel">
+            <div class="dev-image">
+                <div class="avatar-ring">
+                    <img src="krishan1.jpeg" alt="Krishan Kumar Awasthi">
+                </div>
+            </div>
+            <div class="dev-info">
+                <h3 class="highlight">Krishan Kumar Awasthi</h3>
+                <h4>Full-Stack Developer</h4>
+                <p>I transform ideas into pixel-perfect, performant digital products. Currently pursuing a Polytechnic
+                    Diploma in Computer Science at Shivpuri Polytechnic College.</p>
+                <div class="skills-tags">
+                    <span>Flutter</span><span>React</span><span>Node.js</span><span>Supabase</span><span>Firebase</span><span>Three.js</span><span>GSAP</span>
+                </div>
+
+                <h4 style="margin-top: 2rem; margin-bottom: 1rem;">Featured Creations:</h4>
+                <ul class="portfolio-list">
+                    <li><i class="fa-solid fa-check-circle highlight"></i> <strong>Maharana Pratap School:</strong>
+                        Premium website with Next.js, 3D particles, and SEO.</li>
+                    <li><i class="fa-solid fa-check-circle highlight"></i> <strong>Annapurna Delivery:</strong>
+                        Full-stack food app with real-time tracking (Flutter + Supabase).</li>
+                    <li><i class="fa-solid fa-check-circle highlight"></i> <strong>KKA Portfolio:</strong> Interactive
+                        3D web experience with WebGL and GSAP.</li>
+                </ul>
+
+                <div class="dev-links">
+                    <a href="https://kkawasthi.vercel.app/" target="_blank" class="btn-primary"><i
+                            class="fa-solid fa-globe"></i> View Portfolio</a>
+                    <a href="mailto:awasthikrishnaa92@gmail.com" class="btn-secondary"><i
+                            class="fa-solid fa-envelope"></i> Email Me</a>
+                    <a href="tel:+917089881219" class="social-link"><i class="fa-solid fa-phone"></i> +91 7089881219</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content glass-nav">
+            <div class="footer-logo">
+                <img src="fixedfinallogo.png" alt="Logo" style="height: 30px; vertical-align: middle;"> Checkmate Pro
+            </div>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="https://kkawasthi.vercel.app/">Developer Portfolio</a>
+                <a href="#download" class="download-link">Download APK</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 Krishan Kumar Awasthi. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Particles.js Library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- App Store Style Modal -->
+    <div id="storeModal" class="store-modal-overlay">
+        <div class="store-modal glass-panel">
+            <button class="close-modal" id="closeStoreModal">&times;</button>
+            <div class="store-header">
+                <img src="fixedfinallogo.png" alt="App Logo" class="store-app-logo">
+                <div class="store-app-info">
+                    <h2>Checkmate Pro</h2>
+                    <p class="store-developer">Krishan Kumar Awasthi</p>
+                    <div class="store-badges">
+                        <span class="badge">4.9 <i class="fa-solid fa-star"></i></span>
+                        <span class="badge">75 MB</span>
+                        <span class="badge">Rated 3+</span>
+                    </div>
+                </div>
+            </div>
+            <div class="store-actions">
+                <button id="directInstallBtn" class="btn-primary store-install-btn">INSTALL</button>
+            </div>
+            <div class="store-screenshots">
+                <img src="screenshot1.png" alt="Screenshot 1">
+                <img src="screenshot2.png" alt="Screenshot 2">
+                <img src="screenshot3.png" alt="Screenshot 3">
+            </div>
+            <div class="store-description">
+                <h3>About this app</h3>
+                <p>Experience the ultimate chess platform. Zero-latency matchmaking, professional analytics, and premium
+                    Glassmorphism UI. Dominate the board today.</p>
+                <div class="store-tags">
+                    <span>Board Game</span><span>Multiplayer</span><span>Competitive</span>
+                </div>
+            </div>
+            <div class="store-footer">
+                <i class="fa-solid fa-shield-halved"></i> Verified Safe • Direct Installation
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>
