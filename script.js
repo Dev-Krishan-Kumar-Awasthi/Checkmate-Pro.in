@@ -234,8 +234,40 @@ storeModal.addEventListener('click', (e) => {
     if (e.target === storeModal) closeStore();
 });
 
+// Mobile Menu Toggle Logic
+const menuToggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+const navItems = document.querySelectorAll('.nav-links a');
+
+if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        const icon = menuToggle.querySelector('i');
+        if (navLinks.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-xmark');
+        } else {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        }
+    });
+}
+
+// Close mobile menu when a link is clicked
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        if (navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        }
+    });
+});
+
 // PWA Background logic (Keep as fallback but prioritize Native APK)
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     console.log('PWA is ready as fallback');
 });
+
